@@ -1,48 +1,34 @@
 from fastai.text.all import *
-from flask import Flask
-from model import preprocess_data
+from flask import Flask, request, jsonify
+from model import preprocess_data, infer
 import pandas as pd
+
 # import spacy
 app = Flask(__name__)
 
-
-def generate_lyrics(artist,starting_text):
+@app.route('/api/gen-lyrics', methods=['GET'])
+def generate_lyrics():
     """
-    generates lyrics for a particular artist
+    Generates lyrics for a particular artist
     """
+    artist = request.args.get('artist_name')
+    starting_lyrics = request.args.get('starting_lyrics')
+    words = request.args.get('words')
+    sentences = request.args.get('sentences')
+    temperature = request.args.get('temperature')
 
-    #create model
-    dls = preprocess_data(artist)
-
-    # load the model
-    learn = language_model_learner(dls, AWD_LSTM, drop_mult=0.3, metrics=accuracy)
-
-    if artist == "drake":
-        learn = learn.load("Drake_model")
-
-    elif artist == "beach boys":
-        predicter = load_learner("models/beach_boys_model.pkl", cpu=True, pickle_module=pickle)
-
-    elif artist == "red hot chili peppers":
-        predicter = load_learner("models/red_hot_chili_peppers_model.pkl", cpu=True, pickle_module=pickle)
-
-    #generate lyrics in a string 
-    words = 100
-    sentences = 5
-    preds = [learn.predict(starting_text, words, temperature=0.75)
-            for sentence in range(sentences)]
-
-    
-    
-
-
-    
-    #join the list into a string
-    preds = "\n".join(preds)
-
-    return preds   
+    if artist == "" or artist == None or starting_lyrics == None or starting_lyrics == "":
+        return jsonify({"Bad Request: Either artist or starting_lyrics were none"}), 404
+    # call the function to infer the artist and starting text
+    try:
+        pred = infer(artist, starting_lyrics, words=words, sentences=sentences, temperature=temperature)
+        return jsonify({"Success": pred}), 200
+    except:
+        return jsonify({"Not Found: Artist was not found, please try again"}), 404
 
 
 if __name__ == '__main__':
     # app.run()
-    print(generate_lyrics("Drake","jumped out of bed"))
+    artist = input("Enter an artist to generate lyrics for: ")
+    starting_lyrics = input("Enter starting lyrics: ")
+    print(infer(artist, starting_lyrics))
