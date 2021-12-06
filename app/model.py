@@ -1,4 +1,4 @@
-from re import S
+
 from fastai.text.all import *
 import pandas as pd
 import torch
@@ -121,3 +121,4 @@ if __name__ == '__main__':
     elif mode == 'infer':
         pred = infer("Drake", "Another one")
         print(pred)
+    
