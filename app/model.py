@@ -50,10 +50,20 @@ def train_model(artist_name, model=AWD_LSTM):
     
     # transfer learning on the model
     if gpu or want_to_wait:
-        learn.fit_one_cycle(4, 0.005)
+        if gpu:
+            learn.model = learn.model.cuda()
+        learn.fit_one_cycle(3, 1e-3)
+        learn.freeze_to(-2)
+        learn.fit_one_cycle(2, 1e-3)
+        learn.freeze_to(-3)
+        learn.fit_one_cycle(2, 1e-3)
+        learn.freeze_to(-4)
+        learn.fit_one_cycle(2, 1e-3)
+        learn.freeze_to(-5)
+        learn.fit_one_cycle(2, 1e-3)
         learn.unfreeze()
         print("Unfreezing model")
-        learn.fit_one_cycle(20, lr_max=slice(1e-5, 1e-3))
+        learn.fit_one_cycle(6, lr_max=slice(1e-5, 1e-3))
 
     else:
         learn.fit_one_cycle(1, 1e-2)
@@ -113,12 +123,45 @@ def infer(artist_name, start_text, words=50, sentences=3, temperature=0.75):
     return pred
 
 
-
 if __name__ == '__main__':
+    # artists = [
+    #     # 'Rolling Stones',
+    #     # 'Tupac Shakur',
+    #     'The Beach Boys',
+    #     'Red Hot Chili Peppers',
+    #     'Pet Shop Boys',
+    #     'Ice Cube',
+    #     'Madonna',
+    # ]
+
+    artists = [
+        'Elvis Presley',
+        'Bruce Springsteen',
+        'Chris Brown',
+        'Bee Gees',
+        '50 Cent',
+        'Snoop Dogg',
+        'Paul McCartney',
+        'Eminem',
+    ]
+
+    # artists = [
+    #     'Michael Jackson',
+    #     'Linkin Park',
+    #     'The Beatles',
+    #     'Beyoncé',
+    #     'Rihanna',
+    #     'Kanye West',
+    #     'Mac Miller',
+    #     'Taylor Swift',
+    #     'Pitbull'
+    #     ]
     if mode == 'train':
-        learn = train_model('Drake')
+        for artist in artists:
+            print(artist)
+            learn = train_model(artist)
     
     elif mode == 'infer':
-        pred = infer("Drake", "Another one")
+        pred = infer("50 Cent", "Hello world", )
         print(pred)
     
