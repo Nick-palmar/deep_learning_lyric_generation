@@ -124,44 +124,14 @@ def infer(artist_name, start_text, words=50, sentences=3, temperature=0.75):
 
 
 if __name__ == '__main__':
-    # artists = [
-    #     # 'Rolling Stones',
-    #     # 'Tupac Shakur',
-    #     'The Beach Boys',
-    #     'Red Hot Chili Peppers',
-    #     'Pet Shop Boys',
-    #     'Ice Cube',
-    #     'Madonna',
-    # ]
-
-    artists = [
-        'Elvis Presley',
-        'Bruce Springsteen',
-        'Chris Brown',
-        'Bee Gees',
-        '50 Cent',
-        'Snoop Dogg',
-        'Paul McCartney',
-        'Eminem',
-    ]
-
-    # artists = [
-    #     'Michael Jackson',
-    #     'Linkin Park',
-    #     'The Beatles',
-    #     'Beyoncé',
-    #     'Rihanna',
-    #     'Kanye West',
-    #     'Mac Miller',
-    #     'Taylor Swift',
-    #     'Pitbull'
-    #     ]
+    artists = []
+   
     if mode == 'train':
         for artist in artists:
             print(artist)
             learn = train_model(artist)
     
     elif mode == 'infer':
-        pred = infer("50 Cent", "Hello world", )
+        pred = infer("Eminem", "Hello world", )
         print(pred)
     
