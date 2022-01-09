@@ -132,6 +132,9 @@ if __name__ == '__main__':
             learn = train_model(artist)
     
     elif mode == 'infer':
-        pred = infer("Eminem", "Hello world", )
+        start_words = input("Enter starting words: ")
+        artist = "The Beatles"
+        pred = infer(artist, start_words, )
+        print(f"Generating {artist} lyrics...")
         print(pred)
     
