@@ -15,7 +15,7 @@ def preprocess_data(artist_name):
     lyrics_data.rename(columns={"ALink": "Link"}, inplace=True)
     artist_data = pd.read_csv('../data/artists-data.csv')
     merged_dfs = lyrics_data.merge(artist_data, how='inner', on='Link')
-    eng_artists = merged_dfs.loc[merged_dfs['Idiom'] == 'ENGLISH', ['Artist', 'SName', 'Lyric', 'Genre']].drop_duplicates(subset=['SName'])
+    eng_artists = merged_dfs.loc[merged_dfs['language'] == 'en', ['Artist', 'SName', 'Lyric', 'Genres']].drop_duplicates(subset=['SName'])    
     eng_artists.reset_index(inplace=True, drop=True)
     
     # choose the specific artist
